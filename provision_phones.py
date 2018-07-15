@@ -127,17 +127,17 @@ def replace_after_char(origstring, addstring, thischar="="):
 def introduction():
     print("This program is intended to assist with phone configuration file creation")
     print("Before you begin, place one configuration file template into the project directory.")
-    print("Additionally, provide a csv file that contains the following headers: ")
+    print("Additionally, provide a csv file that contains parameters as headers")
     print("Csv file should be comma delimited")
-    print("And finally, you must have a json file containing your parameters.")
 
 
-def mapping_option():
-    print("")
-    print("Values can be mapped from common origin to reduce redundancy.")
-    print("Or if you prefer verbose and illegible-because-their-so-damn-similar variables, you can forego the json file and merely use csv.")
-    print("")
-    x = raw_input("Would you like to map out specific parameters, represented through csv headers, to device values?")
+def copy_files_to_directory():
+    answer = raw_input("If you would like to copy files to a different location, enter directory path.  Else, enter 'n': ")
+    if answer == 'n':
+        print("you chose not to move files")
+    else:
+        print("Copying files to provided directory")
+
 
 
 def program_exit():
@@ -147,15 +147,25 @@ def program_exit():
 
 #-- Array manip ----------------------------------------------------------------
 # function to loop over all values in csv lines
-# NEEDS TO BE FIXED!!!!! uses dict
 def config_search_and_replace(config_lines,key,value):
+    ctr = 0
     for line_id,line in enumerate(config_lines):
         if key in line:
+            ctr = ctr + 1
             print("key found")
             mod_line = replace_after_char(line,value,"\t")
             print(mod_line)
             config_lines[line_id] = mod_line
             return config_lines
+    if ctr == 0:
+        print("Oh no! we couldn't find the parameter %s" %(key))
+        print("Please insure that the parameter is spelled correctly and retry")
+        program_exit()
+    if ctr > 1:
+        print("Oh no! we found multiple matches for parameter %s" %(key))
+        print("Perhaps the parameter string exists as part of another parameter?")
+        print("Please look into this and try again")
+        program_exit()
     return config_lines
 
 def remove_newline_from_array(myarray):
@@ -164,14 +174,13 @@ def remove_newline_from_array(myarray):
         myarray[xid] = util_text.strip_newline_char(x)
     return myarray
 
-
 # function to obtain destination from user
 # DESTINATION COULD BE LOCAL OR NON LOCAL
 
 #--------MAIN-------------------MAIN--------------MAIN--------------------------
 def main():
     introduction()
-    print("startingp program")
+    print("starting program")
     print("setting variables")
     directory_of_output = create_output_directory()
     csv_lines = read_csv()
@@ -180,6 +189,7 @@ def main():
     json_data = read_json_file()
 
     # Keep header row csv
+    print("Collecting csv header")
     csv_header = csv_lines[0]
 
 # -------Direct CSV MAP-----------------
@@ -189,12 +199,13 @@ def main():
             continue
         for field_id,field in enumerate(csv_header):
             print("Looking for field: %s" %field)
-            print("replacing")
             config_lines = config_search_and_replace(config_lines, re.sub(' +','',field),line[field_id])
 
         config_lines = remove_newline_from_array(config_lines)
         print(config_lines)
         print("Writing configfile to %s" %(directory_of_output))
         write_to_file(directory_of_output +"/" + line[0] + ".cfg",config_lines)
+    copy_files_to_directory()
+    print("Program complete!")
+
 main()
-# ------MAPPING OPTION ---------------
