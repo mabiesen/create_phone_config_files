@@ -1,0 +1,47 @@
+Call tested, speed dial tested
+
+
+
+
+1.  has the host name of ha9888-ip-newtest  (at least mine did)
+-nmap pulled it up as such:  ha9888-ip-newtest.percipia.local
+-looks like hostname easily set in gui
+
+2.  Before it will register, a useragent must be set under sip account -> sip settings
+
+3.  Speed dial and memory dial keys not automatically set
+
+4.  Time settings found under administration -> management, ntp hosts already set
+
+5.  Auto provisioning allowed, found under admin -> provisioning
+- option 66 enabled by default
+- uses mac address for file name.  No filename extension by default.  lowercase letters.  Mac address variable is set as $(MA)
+
+6.  Telnet capable, port 23.  disabled by default
+
+7.  ICMP ping offered as an option.  what does it do? why is it called ICMP ping, isnt that by definition?
+
+8.  Has a web dial option!!!!! 
+
+9.  Call immediately key is # by default
+
+10. Call log works, but doesn't appear to log web-based calls?
+
+11.  MEMORY KEYS APPEAR TO REQUIRE MASTER CLONER??  NOOOOOOOOOOOO!!!!!!!
+- Manual suggested cloner - https://www.manualslib.com/manual/757042/Bittel-Ha9888-69-Tsd-S.html?page=2#manual
+- But in reality, memory keys are speed dials.  This was not immediately evident, there are 10 listed in gui but 5 on phone
+
+12.  Changes to any configuration requires reboot it seems.  You are alerted to this.
+
+13.  On reboot, phone will flash and then about 5 seconds later the gui returns.
+
+14.  phone is automatically configured to search for firmware upgrades
+
+
+On the config file
+1.  multi function keys have a weird syntax in config file.  To see what populated looks like.
+- 1$0$0$124$124$  -  This is an example.  In order values as follow:  type, mode, line, expansion, label
+
+2.  extension is "DBID_SIP_PHONE_NUM="
+3.  config file encrypts password in hex + hash
+
