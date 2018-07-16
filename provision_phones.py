@@ -209,6 +209,12 @@ def main():
     print("Collecting csv header")
     csv_header = csv_lines[0]
 
+    # Set appropriate replacement function
+    if json_data["textOrXML"] == "text":
+        replacement_func = text_search_and_replace()
+    elif json_data["textOrXML"] == "XML":
+        replacement_func = xml_search_and_replace()
+
 # -------Direct CSV MAP-----------------
     for line_id,line in enumerate(csv_lines):
         #skip first line
