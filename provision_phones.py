@@ -126,9 +126,14 @@ def replace_after_char(origstring, addstring, thischar="="):
 # begginning prompt
 def introduction():
     print("This program is intended to assist with phone configuration file creation")
+    print("")
     print("Before you begin, place one configuration file template into the project directory.")
+    print("")
     print("Additionally, provide a csv file that contains parameters as headers")
     print("Csv file should be comma delimited")
+    print("")
+    print("And finally, include a json file containing some phone specific detail")
+    print("see the example file")
 
 
 def copy_files_to_directory(directory_of_output):
@@ -159,13 +164,13 @@ def program_exit():
 
 #-- Array manip ----------------------------------------------------------------
 # function to loop over all values in csv lines
-def config_search_and_replace(config_lines,key,value):
+def config_search_and_replace(config_lines,key,value,delimiter):
     ctr = 0
     for line_id,line in enumerate(config_lines):
         if key in line:
             ctr = ctr + 1
             print("key found")
-            mod_line = replace_after_char(line,value,"\t")
+            mod_line = replace_after_char(line,value,delimiter)
             print(mod_line)
             config_lines[line_id] = mod_line
             return config_lines
@@ -211,11 +216,24 @@ def main():
             continue
         for field_id,field in enumerate(csv_header):
             print("Looking for field: %s" %field)
-            config_lines = config_search_and_replace(config_lines, re.sub(' +','',field),line[field_id])
+            field_no_white = re.sub(' +','',field)
+            config_lines = config_search_and_replace(config_lines,field_no_white,line[field_id],json_data["delimiter"])
 
-        config_lines = remove_newline_from_array(config_lines)
         print("Writing configfile to %s" %(directory_of_output))
-        write_to_file(directory_of_output +"/" + line[0] + ".cfg",config_lines)
+
+        # cleanup newlines
+        config_lines = remove_newline_from_array(config_lines)
+
+        # prep the filename
+        filename = line[0]
+        if json_data["nameToUpper"] == "True":
+            filename = filename.upper()
+        if json_data["namePrefix"] != "NONE":
+            filename = json_data["namePrefix"] + filename
+
+        write_to_file(directory_of_output +"/" + filename + json_data["extension"] ,config_lines)
+
+    # offer the option to copy files to tftpboot
     copy_files_to_directory(directory_of_output)
     print("Program complete!")
 

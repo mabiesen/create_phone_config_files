@@ -1,5 +1,7 @@
 {
-  "mac_address": [],
-  "sipserver": [],
-  "extension": ["label","extension","cid"]
+  "delimiter": "\t",
+  "extension": ".cfg",
+  "nameToUpper": "false",
+  "namePrefix": "NONE"
 }
+
