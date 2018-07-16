@@ -1,32 +1,19 @@
-# !/bin/bash
+# Script to assist with the creation of phone configuration files
 
-# ------------VARIABLES---------------
+## Inputs:
 
-# Should have array of fields for each change (ex.  hostname in 6 spots)
-# we could map value as key to arrays in a dict
-
-# Load the configuration file into array of lines
-# load by cfg extension
-# should check for multiple; if multiple abort
-
-# Load the phone csv file into array of lines
-# load by csv extension
-# should check for multiple; if multiple abort
-
-# should request destination from user
+1. CSV file - headers are representative of fields in configuration file
+2. Dummy configuration file - file to be loaded into memory and altered to suit
+3. Name of output directory (to be located in project directory), supplied at runtime.
+4. Type of delimiter to the file (i.e. are params separated by =?)
+5. Name of copy directory (should we copy to tftpboot? ultimately that is the question), supplied at run time
 
 
-# -------------Execution----------------
+## Outputs:
 
-# function to move file to appropriate location 
+1. Files named with MAC address, containing appropriate configuration
 
-# function to write final values to file
 
-# function to replace value in variable based on parameter
+## TODO:
 
-# function to loop through all arrays for value and call replacement function
-
-# function to loop over all values in dict and call our value/array loop
-
-# function to obtain destination from user
-# DESTINATION COULD BE LOCAL OR NON LOCAL
+1.  Currently only works for text:  need to make available for xml
