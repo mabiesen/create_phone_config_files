@@ -1,4 +1,5 @@
 import os
+import shutil
 
 def make_or_clear_dir(dirpath):
     if not os.path.isdir(dirpath):
@@ -40,3 +41,10 @@ def get_current_dir():
 
 def is_file_empty(filepath):
     return os.path.isfile(filepath) and os.path.getsize(filepath) > 0
+
+def copy_files_to_directory(src_dir,final_dir):
+    src_files = os.listdir(src_dir)
+    for file_name in src_files:
+        full_file_name = os.path.join(src_dir, file_name)
+        if (os.path.isfile(full_file_name)):
+            shutil.copy(full_file_name, final_dir)

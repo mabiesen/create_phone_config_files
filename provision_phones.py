@@ -55,9 +55,9 @@ def get_filepath_with_extension(extension):
     # should validate one and only one file of kind, else error and exit
     current_dir = util_dir.get_current_dir()
     num_filetype = util_dir.get_num_of_filetype(extension,current_dir)
-    if num_filetype > 1:
+    if num_filetype != 1:
         print("There are %d of %s files in the directory: \n%s" %(num_filetype,extension,current_dir))
-        print("This is not acceptable, keep clean!")
+        print("This is not acceptable, must have 1 and only 1 %s file" %(extension))
         program_exit()
 
     # get the full file path
@@ -101,7 +101,7 @@ def create_or_clear_dir(directory_of_output):
 
 def create_output_directory():
     print("We need to create a new directory for output")
-    name_of_dir = raw_input("Please enter a name for the new directory: ")
+    name_of_dir = raw_input("Please enter a name for the new, project-local directory: ")
     directory_of_output =  util_dir.filepath_from_script_dir(name_of_dir)
     print("Your files will be output to: " + directory_of_output)
     create_or_clear_dir(directory_of_output)
@@ -131,12 +131,24 @@ def introduction():
     print("Csv file should be comma delimited")
 
 
-def copy_files_to_directory():
-    answer = raw_input("If you would like to copy files to a different location, enter directory path.  Else, enter 'n': ")
+def copy_files_to_directory(directory_of_output):
+    answer = raw_input("If you would like to copy files to an existing directory, enter directory path.  Else, enter 'n': ")
     if answer == 'n':
         print("you chose not to move files")
     else:
-        print("Copying files to provided directory")
+        print("Validating the chosen directory")
+        validation = util_dir.check_for_dir(answer)
+        if validation == False:
+            print("That was not an acceptable directory")
+            print("Files will not be copied")
+            program_exit()
+        else:
+            print("Copying files...")
+            try:
+                util_dir.copy_files_to_directory(directory_of_output,answer)
+            except:
+                print("There was an error copying files to the selected directory")
+                program_exit()
 
 
 
@@ -202,10 +214,9 @@ def main():
             config_lines = config_search_and_replace(config_lines, re.sub(' +','',field),line[field_id])
 
         config_lines = remove_newline_from_array(config_lines)
-        print(config_lines)
         print("Writing configfile to %s" %(directory_of_output))
         write_to_file(directory_of_output +"/" + line[0] + ".cfg",config_lines)
-    copy_files_to_directory()
+    copy_files_to_directory(directory_of_output)
     print("Program complete!")
 
 main()
