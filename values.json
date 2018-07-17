@@ -1,5 +1,5 @@
 {
-  "textOrXML": "text"
+  "textOrXML": "text",
   "delimiter": "\t",
   "extension": ".cfg",
   "nameToUpper": "false",

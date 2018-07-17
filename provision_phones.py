@@ -46,6 +46,7 @@ def read_json_file():
         return parameters_dict
     except:
         print("There was an error loading the parameters json file")
+        print("It is possible that you forgot a comma separator")
         print(sys.exc_info()[0])
         program_exit()
 
