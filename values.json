@@ -1,8 +1,7 @@
 {
-  "textOrXML": "text",
+  "textOrXML": "XML",
   "delimiter": "\t",
-  "extension": ".cfg",
+  "extension": ".xml",
   "nameToUpper": "false",
   "namePrefix": "NONE"
 }
-

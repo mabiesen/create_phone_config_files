@@ -1,7 +1,8 @@
 # !/bin/bash
 import util_csv
-import util_text
+import util_text_file
 import util_dir
+import util_xml_file
 import json
 import sys
 import re
@@ -9,9 +10,9 @@ import re
 #---Reading files ------------------------------------------
 # function to put starter phone cfg into variable
 
-def read_config_file():
+def read_config_file(extension):
     print("looking for config file")
-    filepath = get_filepath_with_extension(".cfg")
+    filepath = get_filepath_with_extension(extension)
     print("reading config file")
     try:
         config_lines = util_text.readToArray(filepath)
@@ -132,6 +133,7 @@ def introduction():
     print("")
     print("Additionally, provide a csv file that contains parameters as headers")
     print("Csv file should be comma delimited")
+    print("NOTE:  YOU MUST PUT THE MAC ADDRESS IN FIRST COLUMN!!! MANDATORY.")
     print("")
     print("And finally, include a json file containing some phone specific detail")
     print("see the example file")
@@ -165,7 +167,7 @@ def program_exit():
 
 #-- Array manip ----------------------------------------------------------------
 # function to loop over all values in csv lines
-def config_search_and_replace(config_lines,key,value,delimiter):
+def string_config_search_and_replace(config_lines,key,value,delimiter):
     ctr = 0
     for line_id,line in enumerate(config_lines):
         if key in line:
@@ -203,20 +205,29 @@ def main():
     directory_of_output = create_output_directory()
     csv_lines = read_csv()
     print(csv_lines)
-    config_lines = read_config_file()
     json_data = read_json_file()
 
     # Keep header row csv
     print("Collecting csv header")
     csv_header = csv_lines[0]
 
-    # Set appropriate replacement function
-    if json_data["textOrXML"] == "text":
-        replacement_func = text_search_and_replace()
-    elif json_data["textOrXML"] == "XML":
-        replacement_func = xml_search_and_replace()
-
 # -------Direct CSV MAP-----------------
+
+#----- Set the config file ----
+    data_type = json_data["textOrXML"]
+    extension = json_data['extension']
+
+    if data_type == "text":
+        config_lines = read_config_file(extension)
+    elif data_type == "XML":
+        xml_obj = util_xml_file.XMLFile(get_filepath_with_extension(extension))
+    else:
+        print("An invalid config file type was supplied in the json file")
+        print("This is not acceptable.  Please configure the")
+        print("textOrXML field to say either 'text' or 'XML' accordingly")
+        program_exit()
+
+#------ Iterate over CSV data and replace
     for line_id,line in enumerate(csv_lines):
         #skip first line
         if line_id == 0:
@@ -224,21 +235,32 @@ def main():
         for field_id,field in enumerate(csv_header):
             print("Looking for field: %s" %field)
             field_no_white = re.sub(' +','',field)
-            config_lines = config_search_and_replace(config_lines,field_no_white,line[field_id],json_data["delimiter"])
+            if data_type == "text":
+                config_lines = string_config_search_and_replace(config_lines,field_no_white,line[field_id],json_data["delimiter"])
+            if data_type == "XML":
+                xml_obj.replace_tag_text(field_no_white,line[field_id])
 
         print("Writing configfile to %s" %(directory_of_output))
 
-        # cleanup newlines
-        config_lines = remove_newline_from_array(config_lines)
+        # cleanup newlines if text
+        if data_type == "text":
+            config_lines = remove_newline_from_array(config_lines)
 
         # prep the filename
         filename = line[0]
-        if json_data["nameToUpper"] == "True":
+        if json_data["nameToUpper"].upper() == "TRUE":
             filename = filename.upper()
-        if json_data["namePrefix"] != "NONE":
+        if json_data["namePrefix"].upper() != "NONE":
             filename = json_data["namePrefix"] + filename
 
-        write_to_file(directory_of_output +"/" + filename + json_data["extension"] ,config_lines)
+        final_file_path = directory_of_output +"/" + filename + extension
+
+        # write the file
+        if data_type == "text":
+            write_to_file(final_file_path,config_lines)
+        if data_type == "XML":
+            xml_obj.write_to_file(final_file_path)
+
 
     # offer the option to copy files to tftpboot
     copy_files_to_directory(directory_of_output)
