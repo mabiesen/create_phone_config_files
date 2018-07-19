@@ -174,28 +174,29 @@ def main():
     extension = json_data['filename_extension']
 
     try:
-        filename_field_id = csv_header.index(json_data['filename_field'])
-        print("Location of filename_field is %d" %(filename_field_id))
+        filename_field_index = csv_header.index(json_data['filename_field'])
+        print("Location of filename_field is %d" %(filename_field_index))
     except:
-        print("could not find filename field in csv header")
+        print("could not find filename field %s in csv header" %(json_data['filename_field']))
         program_exit()
 
     # get the config file
-    filepath = get_filepath_with_extension(extension)
+    config_filepath = get_filepath_with_extension(extension)
 
     # determine whether we should evaluate as a text file or xml
     if data_type == "text":
         try:
-            file_class = TextFile(filepath, json_data)
+            file_class = TextFile(config_filepath, json_data)
         except Exception as e:
             print("Error creating text fileclass")
             print(e)
             program_exit()
     elif data_type == "XML":
         try:
-            file_class = XMLFile(filepath, json_data)
+            file_class = XMLFile(config_filepath, json_data)
         except Exception as e:
             print("Error creating xml file class")
+            print("Are you sure file data is in XML format?")
             print(e)
             program_exit()
     else:
@@ -217,7 +218,7 @@ def main():
         print("Writing configfile to %s" %(directory_of_output))
 
         # prep the filename
-        filename = line[0]
+        filename = line[filename_field_index]
         if json_data["filename_to_upper_bool"].upper() == "TRUE":
             filename = filename.upper()
         if json_data["filename_prefix_or_none"].upper() != "NONE":

@@ -2,6 +2,7 @@
   "textOrXML": "XML",
   "text_delimiter": "\t",
   "text_delimiter_override": "true",
+  "filename_field": "MAC_ADDRESS",
   "filename_extension": ".xml",
   "filename_to_upper_bool": "true",
   "filename_prefix_or_none": "SEP"

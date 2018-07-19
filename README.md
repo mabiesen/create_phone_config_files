@@ -37,4 +37,4 @@
 
 ## TODO:
 
-1.  Add option to script to create a file with appropriate csv headers
+1.  Add option to script to create a mock csv input file with appropriate csv headers
