@@ -1,8 +1,5 @@
 <dude>
-  <car>stuff</car>
-  <car>things</car>
   <sub>
-    <car>stuffythings</car>
+    <RADIUS_Key>stuffythings</RADIUS_Key>
   </sub>
 </dude>
-

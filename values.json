@@ -1,7 +1,8 @@
 {
   "textOrXML": "XML",
-  "delimiter": "\t",
-  "extension": ".xml",
-  "nameToUpper": "false",
-  "namePrefix": "NONE"
+  "text_delimiter": "\t",
+  "text_delimiter_override": "true",
+  "configfile_extension": ".xml",
+  "filename_to_upper_bool": "true",
+  "filename_prefix_or_none": "SEP"
 }
