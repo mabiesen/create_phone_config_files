@@ -171,7 +171,14 @@ def main():
     # JSON data
     json_data = read_json_file()
     data_type = json_data["textOrXML"]
-    extension = json_data['configfile_extension']
+    extension = json_data['filename_extension']
+
+    try:
+        filename_field_id = csv_header.index(json_data['filename_field'])
+        print("Location of filename_field is %d" %(filename_field_id))
+    except:
+        print("could not find filename field in csv header")
+        program_exit()
 
     # get the config file
     filepath = get_filepath_with_extension(extension)
