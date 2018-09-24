@@ -1,5 +1,7 @@
 # Script to assist with the creation of phone configuration files
 
+NOTE:  THIS IS FOR HISTORICAL REFERENCE ONLY.  Project moved to Percipia repo
+
 ## Inputs:
 
 1. CSV file - headers are representative of fields in configuration file
